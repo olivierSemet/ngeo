@@ -278,6 +278,29 @@ gmf.SearchController = function($scope, $compile, $timeout, gettextCatalog,
     select: goog.bind(gmf.SearchController.select_, this),
     close: goog.bind(gmf.SearchController.close_, this)
   });
+
+
+  /**
+   * Groups added to the theme with the 'add_group' action.
+   * @type {Array.<Object>}
+   * @private
+   */
+  this.addedGroups_ = [];
+
+  this.scope_.$watch(function() {
+    return this.scope_['currentTheme'];
+  }.bind(this), function(newTheme, previousTheme) {
+    if (previousTheme) {
+      for (var i = 0, ii = this.addedGroups_.length; i < ii; i++) {
+        var index = previousTheme.children.indexOf(this.addedGroups_[i]);
+        if (index >= 0) {
+          previousTheme.children.splice(index, 1);
+        }
+      }
+      this.addedGroups_.length = 0;
+    }
+  }.bind(this));
+
 };
 
 
@@ -451,6 +474,7 @@ gmf.SearchController.prototype.setTheme_ = function(themeName) {
 gmf.SearchController.prototype.addGroupToTheme_ = function(group) {
   var currentTheme = this.scope_['currentTheme'];
   if (currentTheme.children.indexOf(group) < 0) {
+    this.addedGroups_.push(group);
     currentTheme.children.push(group);
     return true;
   }
