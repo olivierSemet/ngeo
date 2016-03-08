@@ -685,9 +685,10 @@ transifex-init: .build/dev-requirements.timestamp .tx/config \
 	mkdir -p $(dir $@)
 	wget -O $@ https://raw.githubusercontent.com/camptocamp/demo_geomapfish/master/demo/locale/$*/LC_MESSAGES/demo-client.po
 
-contribs/gmf/build/gmf-en.json:
+contribs/gmf/build/gmf-en.json: .build/locale/en/LC_MESSAGES/demo.po \
+		.build/node_modules.timestamp
 	mkdir -p $(dir $@)
-	echo '{}' > $@
+	node buildtools/compile-catalog $(filter-out .build/node_modules.timestamp, $^) > $@
 
 contribs/gmf/build/gmf-%.json: .build/locale/%/LC_MESSAGES/gmf.po \
 		.build/locale/%/LC_MESSAGES/demo.po \
