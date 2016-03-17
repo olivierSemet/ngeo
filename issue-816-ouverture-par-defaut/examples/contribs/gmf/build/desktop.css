@@ -9191,6 +9191,9 @@ gmf-layertree ul .treenode a {
 gmf-layertree ul .treenode a::after {
   display: none;
 }
+gmf-layertree ul .treenode a.expand-node.fa {
+  display: inline-block;
+}
 gmf-layertree ul .treenode a.expand-node.fa::before {
   content: "\f054";
 }
