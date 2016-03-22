@@ -110918,118 +110918,142 @@ goog.require('ngeo');
 
 /**
  * Provides a directive used to display a Bootstrap popover.
+ *
+ * @example <caption> Basic usage of nego popover </caption>
+ *<div ngeo-popover>
+ *  <a ngeo-popover-anchor class="btn btn-info">anchor 1</a>
+ *  <div ngeo-popover-content="">
+ *    <ul>
+ *      <li>action 1:
+ *        <input type="range"/>
+ *      </li>
+ *    </ul>
+ *  </div>
+ *</div>
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopover
- * @return {angular.Directive}
+ * @return {angular.Directive} The Directive Definition Object.
  */
 ngeo.popoverDirective = function() {
-    return {
-        restrict : 'A',
-        scope : {},
-        controller : 'NgeoPopoverController',
-        link : function(scope, elem, attrs, controller) {
-            function onClick(clickEvent) {
-                if(controller.anchorElm[0] !== clickEvent.target && controller.shown) {
-                    controller.shown = false;
-                    controller.anchorElm.popover('hide');
-                }
-            }
-            angular.element('body').on('click', onClick);
-        }
-    }
+  return {
+    restrict: 'A',
+    scope : true,
+    controller: 'NgeoPopoverController'
+  }
 };
 
 /**
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopoverAnchor
- * @return {angular.Directive}
+ * @return {angular.Directive} The Directive Definition Object
  */
 ngeo.popoverAnchorDirective = function() {
-    return {
-        restrict : 'A',
-        require : ['^^ngeoPopover'],
-        scope : {},
-        link : function(scope, elem, attrs, controllers) {
-            var ngeoPopoverCtrl = controllers[0];
-            ngeoPopoverCtrl.anchorElm = elem;
-            elem.on('inserted.bs.popover', function(event) {
-                ngeoPopoverCtrl.shown = true;
-                angular.element('.popover').on('click', function(e) {
-                    e.stopPropagation();
-                })
-            });
+  return {
+    restrict: 'A',
+    require: ['^^ngeoPopover'],
+    link: function(scope, elem, attrs, controllers) {
+      var ngeoPopoverCtrl = controllers[0];
+      ngeoPopoverCtrl.anchorElm = elem;
+      elem.on('hidden.bs.popover', function(event) {
+        /**
+         * @type {{inState : Object}}
+         */
+        var popover = elem.data('bs.popover');
+        popover['inState'].click = false;
+      });
 
-            elem.on('hidden.bs.popover', function(event) {
-                /**
-                 * @type {{inState : Object}}
-                 */
-                var popover = elem.data("bs.popover");
-                popover['inState'].click = false;
-            });
-        }
+      elem.on('inserted.bs.popover', function(event) {
+        ngeoPopoverCtrl.shown = true;
+        ngeoPopoverCtrl.bodyElm.parent().on('click', function(e) {
+          e.stopPropagation();
+        })
+      });
+
+      scope.$on('$destroy', function () {
+        elem.unbind('inserted.bs.popover');
+        elem.unbind('hidden.bs.popover');
+      })
     }
+  }
 };
 
 /**
  * @ngdoc directive
  * @ngInject
  * @ngname ngeoPopoverContent
- * @return {angular.Directive}
+ * @return {angular.Directive} The Directive Definition Object
  */
-ngeo.popoverContentDirective = function () {
-    return {
-        restrict: 'A',
-        transclude : true,
-        require : ['^^ngeoPopover'],
-        scope: {},
-        link: function (scope, elem, attrs, controllers, transclude) {
-            var ngeoPopoverCtrl = controllers[0];
-            ngeoPopoverCtrl.bodyElm = transclude();
-            var anchor = controllers[0].anchorElm;
-            anchor.popover({
-                container: 'body',
-                html: true,
-                content : ngeoPopoverCtrl.bodyElm
-            });
-        }
+ngeo.popoverContentDirective = function() {
+  return {
+    restrict: 'A',
+    transclude: true,
+    require: ['^^ngeoPopover'],
+    link: function(scope, elem, attrs, controllers, transclude) {
+      var ngeoPopoverCtrl = controllers[0];
+      ngeoPopoverCtrl.bodyElm = transclude();
+      var anchor = controllers[0].anchorElm;
+      anchor.popover({
+        container: 'body',
+        html: true,
+        content: ngeoPopoverCtrl.bodyElm
+      });
     }
+  }
 };
 
 /**
- * The controller for the "tree node" directive.
+ * The controller for the 'popover' directive.
  * @constructor
  * @ngInject
  * @export
  * @ngdoc controller
- * @ngname NgeoLayertreeController
+ * @ngname NgeoPopoverController
+ * @param {angular.Scope} $scope Scope.
  */
-ngeo.PopoverController = function () {
-    /**
-     * The state of the popover (displayed or not)
-     * @type {boolean}
-     * @export
-     */
-    this.shown = false;
+ngeo.PopoverController = function($scope) {
+  var self = this;
+  /**
+   * The state of the popover (displayed or not)
+   * @type {boolean}
+   * @export
+   */
+  this.shown = false;
 
-    /**
-     * @type {angular.JQLite|undefined}
-     * @export
-     */
-    this.anchorElm = undefined;
+  /**
+   * @type {angular.JQLite|undefined}
+   * @export
+   */
+  this.anchorElm = undefined;
 
-    /**
-     * @type {angular.JQLite|undefined}
-     * @export
-     */
-    this.bodyElm = undefined;
+  /**
+   * @type {angular.JQLite|undefined}
+   * @export
+   */
+  this.bodyElm = undefined;
+
+  function onClick(clickEvent) {
+
+    if (self.anchorElm[0] !== clickEvent.target && self.shown) {
+      self.shown = false;
+      self.anchorElm.popover('hide');
+    }
+
+  }
+
+  angular.element('body').on('click', onClick);
+
+  $scope.$on('$destroy', function() {
+    angular.element('body').off('click', onClick);
+  })
 };
 
 ngeo.module.controller('NgeoPopoverController', ngeo.PopoverController);
 ngeo.module.directive('ngeoPopover', ngeo.popoverDirective);
 ngeo.module.directive('ngeoPopoverAnchor', ngeo.popoverAnchorDirective);
 ngeo.module.directive('ngeoPopoverContent', ngeo.popoverContentDirective);
+
 goog.provide('ngeo.popupDirective');
 
 goog.require('ngeo');
