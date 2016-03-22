@@ -108998,8 +108998,8 @@ goog.require('ol.control.Control');
 
 
 /**
- * Provides a directive can be used to add a control to a DOM
- * element of the HTML page.
+ * Provides a directive that can be used to add a control to the map
+ * using a DOM element.
  *
  * Example:
  *
@@ -109721,7 +109721,7 @@ ngeo.module.value('ngeoLayertreeTemplateUrl',
  *      <div ngeo-layertree="ctrl.tree"
  *        ngeo-layertree-map="ctrl.map"
  *        ngeo-layertree-nodelayer="ctrl.getLayer(node)"
- *        ngeo-layertree-listeners="ctrl.listeners(treeScope, treeCtrl)"
+ *        ngeo-layertree-listeners="ctrl.listeners(treeScope, treeCtrl)">
  *      </div>
  *
  * The "ngeo-layertree", "ngeo-layertree-map" and
@@ -110908,6 +110908,128 @@ ngeo.modalDirective = function($parse) {
 
 ngeo.module.directive('ngeoModal', ngeo.modalDirective);
 
+goog.provide('ngeo.popoverDirective');
+goog.provide('ngeo.popoverAnchorDirective');
+goog.provide('ngeo.popoverContentDirective');
+goog.provide('ngeo.PopoverController');
+
+goog.require('ngeo');
+
+
+/**
+ * Provides a directive used to display a Bootstrap popover.
+ * @ngdoc directive
+ * @ngInject
+ * @ngname ngeoPopover
+ * @return {angular.Directive}
+ */
+ngeo.popoverDirective = function() {
+    return {
+        restrict : 'A',
+        scope : {},
+        controller : 'NgeoPopoverController',
+        link : function(scope, elem, attrs, controller) {
+            function onClick(clickEvent) {
+                if(controller.anchorElm[0] !== clickEvent.target && controller.shown) {
+                    controller.shown = false;
+                    controller.anchorElm.popover('hide');
+                }
+            }
+            angular.element('body').on('click', onClick);
+        }
+    }
+};
+
+/**
+ * @ngdoc directive
+ * @ngInject
+ * @ngname ngeoPopoverAnchor
+ * @return {angular.Directive}
+ */
+ngeo.popoverAnchorDirective = function() {
+    return {
+        restrict : 'A',
+        require : ['^^ngeoPopover'],
+        scope : {},
+        link : function(scope, elem, attrs, controllers) {
+            var ngeoPopoverCtrl = controllers[0];
+            ngeoPopoverCtrl.anchorElm = elem;
+            elem.on('inserted.bs.popover', function(event) {
+                ngeoPopoverCtrl.shown = true;
+                angular.element('.popover').on('click', function(e) {
+                    e.stopPropagation();
+                })
+            });
+
+            elem.on('hidden.bs.popover', function(event) {
+                /**
+                 * @type {{inState : Object}}
+                 */
+                var popover = elem.data("bs.popover");
+                popover['inState'].click = false;
+            });
+        }
+    }
+};
+
+/**
+ * @ngdoc directive
+ * @ngInject
+ * @ngname ngeoPopoverContent
+ * @return {angular.Directive}
+ */
+ngeo.popoverContentDirective = function () {
+    return {
+        restrict: 'A',
+        transclude : true,
+        require : ['^^ngeoPopover'],
+        scope: {},
+        link: function (scope, elem, attrs, controllers, transclude) {
+            var ngeoPopoverCtrl = controllers[0];
+            ngeoPopoverCtrl.bodyElm = transclude();
+            var anchor = controllers[0].anchorElm;
+            anchor.popover({
+                container: 'body',
+                html: true,
+                content : ngeoPopoverCtrl.bodyElm
+            });
+        }
+    }
+};
+
+/**
+ * The controller for the "tree node" directive.
+ * @constructor
+ * @ngInject
+ * @export
+ * @ngdoc controller
+ * @ngname NgeoLayertreeController
+ */
+ngeo.PopoverController = function () {
+    /**
+     * The state of the popover (displayed or not)
+     * @type {boolean}
+     * @export
+     */
+    this.shown = false;
+
+    /**
+     * @type {angular.JQLite|undefined}
+     * @export
+     */
+    this.anchorElm = undefined;
+
+    /**
+     * @type {angular.JQLite|undefined}
+     * @export
+     */
+    this.bodyElm = undefined;
+};
+
+ngeo.module.controller('NgeoPopoverController', ngeo.PopoverController);
+ngeo.module.directive('ngeoPopover', ngeo.popoverDirective);
+ngeo.module.directive('ngeoPopoverAnchor', ngeo.popoverAnchorDirective);
+ngeo.module.directive('ngeoPopoverContent', ngeo.popoverContentDirective);
 goog.provide('ngeo.popupDirective');
 
 goog.require('ngeo');
@@ -114303,14 +114425,18 @@ ngeo.ScaleselectorController = function($scope, $element, $attrs) {
       ($scope.$eval(scalesExpr));
   goog.asserts.assert(this.scales !== undefined);
 
-  var zoomLevels = Object.keys(this.scales).map(Number);
-  zoomLevels.sort(ol.array.numberSafeCompareFunction);
-
   /**
    * @type {Array.<number>}
    * @export
    */
-  this.zoomLevels = zoomLevels;
+  this.zoomLevels;
+
+  $scope.$watch(function() {
+    return Object.keys(this.scales).length;
+  }.bind(this), function(newLength) {
+    this.zoomLevels = Object.keys(this.scales).map(Number);
+    this.zoomLevels.sort(ol.array.numberSafeCompareFunction);
+  }.bind(this));
 
   var mapExpr = $attrs['ngeoScaleselectorMap'];
 
@@ -114435,6 +114561,7 @@ ngeo.ScaleselectorController.prototype.handleResolutionChange_ = function(e) {
  */
 ngeo.ScaleselectorController.prototype.handleViewChange_ = function(e) {
   this.registerResolutionChangeListener_();
+  this.handleResolutionChange_(null);
 };
 
 
@@ -117779,9 +117906,8 @@ ngeo.SortableOptions;
 
 
 /**
- * Provides the "ngeoSortable" directive. This directive allows
- * drag-and-dropping DOM items between them. The directive also changes the
- * order of elements in the array it is given.
+ * Provides a directive that allows drag-and-dropping DOM items between them.
+ * It also changes the order of elements in the given array.
  *
  * It is typically used together with `ng-repeat`, for example for re-ordering
  * layers in a map.
@@ -121309,7 +121435,7 @@ goog.require('ngeo');
  *
  *      <input type="checkbox" ngModel="layer.visible" />
  *
- * @typedef {function(ol.layer.Layer)}
+ * @typedef {function(ol.layer.Base)}
  * @ngdoc service
  * @ngname ngeoDecorateLayer
  */
@@ -121317,10 +121443,10 @@ ngeo.DecorateLayer;
 
 
 /**
- * @param {ol.layer.Layer} layer Layer to decorate.
+ * @param {ol.layer.Base} layer Layer to decorate.
  */
 ngeo.decorateLayer = function(layer) {
-  goog.asserts.assertInstanceof(layer, ol.layer.Layer);
+  goog.asserts.assertInstanceof(layer, ol.layer.Base);
 
   Object.defineProperty(layer, 'visible', {
     configurable: true,
@@ -121603,6 +121729,32 @@ ngeo.LayerHelper.prototype.getFlatLayers_ = function(layer, array) {
   }
   return array;
 };
+
+
+/**
+ * Get a layer that has a `layerName` property equal to a given layer name from
+ * an array of layers. If one of the layers in the array is a group, then the
+ * layers contained in that group are searched as well.
+ * @param {string} layerName The name of the layer we're looking for.
+ * @param {Array.<ol.layer.Base>} layers Layers.
+ * @return {?ol.layer.Base} Layer.
+ * @export
+ */
+ngeo.LayerHelper.prototype.getLayerByName = function(layerName, layers) {
+  var found = null;
+  layers.some(function(layer) {
+    if (layer instanceof ol.layer.Group) {
+      var sublayers = layer.getLayers().getArray();
+      found = this.getLayerByName(layerName, sublayers);
+    } else if (layer.get('layerName') === layerName) {
+      found = layer;
+    }
+    return !!found;
+  }, this);
+
+  return found;
+};
+
 
 ngeo.module.service('ngeoLayerHelper', ngeo.LayerHelper);
 
