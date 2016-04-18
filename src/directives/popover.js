@@ -78,20 +78,43 @@ ngeo.popoverAnchorDirective = function() {
 
 /**
  * @ngdoc directive
+ * @param {angular.$compile} $compile Angular compile service.
  * @ngInject
  * @ngname ngeoPopoverContent
  * @return {angular.Directive} The Directive Definition Object
  */
-ngeo.popoverContentDirective = function() {
+ngeo.popoverContentDirective = function($compile) {
   return {
     restrict: 'A',
-    transclude: true,
     require: '^^ngeoPopover',
-    link: function(scope, elem, attrs, ngeoPopoverCtrl, transclude) {
-      transclude(scope, function(transcludedElm, scope) {
-        ngeoPopoverCtrl.bodyElm = transcludedElm;
-      });
-    }
+    /*eslint-disable */
+    compile:
+        /**
+         * @param {angular.JQLite} tElement Template element.
+         * @param {angular.Attributes} tAttrs Template attributes.
+         * @return {Function} Post-link function.
+         */
+        function(tElement, tAttrs) {
+          var contents = tElement.contents().remove();
+          var compiledContents;
+          return (
+              /**
+               * Post-link function.
+               * @param {!angular.Scope} scope Scope.
+               * @param {angular.JQLite} elem Instance element.
+               * @param {angular.Attributes} attrs Instance attributes.
+               * @param {ngeo.PopoverController} ctrl Controller from Popover.
+               */
+              function(scope, elem, attrs, ctrl) {
+                elem.append(contents);
+                if (!compiledContents) {
+                  compiledContents = $compile(contents);
+                }
+                compiledContents(scope);
+                ctrl.bodyElm = elem.contents().remove();
+              });
+        }
+    /*eslint-enable */
   }
 };
 
