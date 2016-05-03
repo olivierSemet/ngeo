@@ -108794,7 +108794,7 @@ goog.require('ngeo');
  *
  *      <span ng-if="layer.loading">please wait</span>
  *
- * @typedef {function(ol.layer.Base, angular.Scope, ol.layer.Base)}
+ * @typedef {function(ol.layer.Base, angular.Scope, ol.layer.Base=)}
  * @ngdoc service
  * @ngname ngeoDecorateLayerLoading
  */
