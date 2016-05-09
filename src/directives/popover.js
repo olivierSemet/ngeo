@@ -93,7 +93,7 @@ ngeo.popoverContentDirective = function() {
   return {
     restrict: 'A',
     require: '^^ngeoPopover',
-    link : function(scope, elem, attrs, ngeoPopoverCtrl) {
+    link: function(scope, elem, attrs, ngeoPopoverCtrl) {
       ngeoPopoverCtrl.bodyElm = elem;
       elem.hide();
     }
