@@ -316,7 +316,8 @@ gmf.LayertreeController.prototype.getLayerCaseMixedGroup_ = function(node) {
   var layer, subNode;
   var subNodes = [];
   var nodeNames = [];
-  this.getFlatNodes_(node, subNodes);
+  // this.getFlatNodes_(node, subNodes);
+  subNodes = node.children;
   for (i = 0; i < subNodes.length; i++) {
     subNode = subNodes[i];
     // Create all sublayers include wms layers;
@@ -430,6 +431,18 @@ gmf.LayertreeController.prototype.retrieveFirstParentTree_ = function(treeCtrl) 
   return tree;
 };
 
+gmf.LayertreeController.prototype.retrieveFirstNonMixedTree_ = function(treeCtrl) {
+  var tree = treeCtrl;
+  var found = null;
+  while (tree.depth > 1) {
+    if (this.getNodeType_(tree.node) === gmf.LayertreeController.TYPE_NOTMIXEDGROUP) {
+      found = tree;
+    }
+    tree = tree.parent;
+  }
+  return found;
+};
+
 
 /**
  * Remove layer from this component's layergroup (and then, from the map) on
@@ -467,6 +480,29 @@ gmf.LayertreeController.prototype.getResolutionStyle = function(node) {
   return style || null;
 };
 
+gmf.LayertreeController.prototype.toggleNonMixed_ = function(nodeGroup, node, layer, isActive) {
+  var nodeNames = [];
+  var source = /** @type {ol.source.ImageWMS} */
+      (layer.getSource());
+  var currentLayersNames = (layer.getVisible()) ?
+      source.getParams()['LAYERS'].split(',') : [];
+  var name, newLayersNames = [];
+  nodeNames = this.retrieveNodeNames_(nodeGroup);
+  // Add/remove layer and keep order of layers in layergroup.
+  for (var i = 0; i < nodeNames.length; i++) {
+    name = nodeNames[i];
+    if (name === node.name) {
+      if (!isActive) {
+        newLayersNames.push(name);
+      }
+    } else if (currentLayersNames.indexOf(name) >= 0) {
+      newLayersNames.push(name);
+    }
+  }
+  goog.asserts.assertInstanceof(layer, ol.layer.Image);
+  this.updateWMSLayerState_(layer, newLayersNames);
+}
+
 
 /**
  * Toggle the state of treeCtrl's node.
@@ -478,7 +514,8 @@ gmf.LayertreeController.prototype.toggleActive = function(treeCtrl) {
   var node = /** @type {GmfThemesNode} */ (treeCtrl.node);
   var type = this.getNodeType_(node);
   var layer = treeCtrl.layer;
-  var i, layers, nodeNames;
+  var i, layers, nodeNames, firstNonMixed;
+  var subNodes = [];
   var firstParentTree = this.retrieveFirstParentTree_(treeCtrl);
   var firstParentTreeLayer = firstParentTree.layer;
   // Check if the current node state is 'activated'.
@@ -491,31 +528,21 @@ gmf.LayertreeController.prototype.toggleActive = function(treeCtrl) {
     case gmf.LayertreeController.TYPE_EXTERNALWMS:
 
       if (firstParentTreeLayer instanceof ol.layer.Group) {
-        layer.setVisible(!isActive);
-
+        firstNonMixed = this.retrieveFirstNonMixedTree_(treeCtrl);
+        if (firstNonMixed) {
+          //case not-mixed group in a mixed group. Changing firstParentTree ref
+          //to the first not-mixed tree
+          this.getFlatNodes_(firstNonMixed.node, subNodes);
+          firstParentTreeLayer = firstParentTreeLayer.getLayers().getArray().filter(function(l) {
+            return l.get('layerName') === firstNonMixed.node.name;
+          })[0];
+          this.toggleNonMixed_(firstNonMixed.node, node, firstParentTreeLayer, isActive);
+        } else {
+          layer.setVisible(!isActive);
+        }
       } else {
         // If layer of the group is a wms in a not mixed group:
-        var firstParentTreeSource = /** @type {ol.source.ImageWMS} */
-            (firstParentTreeLayer.getSource());
-        var firstParentTreeNode =  /** @type {GmfThemesNode} */
-            (firstParentTree.node);
-        var currentLayersNames = (firstParentTreeLayer.getVisible()) ?
-            firstParentTreeSource.getParams()['LAYERS'].split(',') : [];
-        var name, newLayersNames = [];
-        nodeNames = this.retrieveNodeNames_(firstParentTreeNode);
-        // Add/remove layer and keep order of layers in layergroup.
-        for (i = 0; i < nodeNames.length; i++) {
-          name = nodeNames[i];
-          if (name === node.name) {
-            if (!isActive) {
-              newLayersNames.push(name);
-            }
-          } else if (currentLayersNames.indexOf(name) >= 0) {
-            newLayersNames.push(name);
-          }
-        }
-        goog.asserts.assertInstanceof(firstParentTreeLayer, ol.layer.Image);
-        this.updateWMSLayerState_(firstParentTreeLayer, newLayersNames);
+        this.toggleNonMixed_(firstParentTree.node, node, firstParentTreeLayer, isActive);
       }
       break;
 
@@ -543,6 +570,15 @@ gmf.LayertreeController.prototype.toggleActive = function(treeCtrl) {
       break;
 
     case gmf.LayertreeController.TYPE_NOTMIXEDGROUP:
+      if (this.getNodeType_(firstParentTree.node) === gmf.LayertreeController.TYPE_MIXEDGROUP) {
+        //case not-mixed group in a mixed group. Changing firstParentTree ref
+        //to the first not-mixed tree
+        firstNonMixed = this.retrieveFirstNonMixedTree_(treeCtrl) || treeCtrl;
+        this.getFlatNodes_(firstNonMixed.node, subNodes);
+        firstParentTreeLayer = firstParentTreeLayer.getLayers().getArray().filter(function(l) {
+          return l.get('layerName') === firstNonMixed.node.name;
+        })[0];
+      }
       nodeNames = this.retrieveNodeNames_(node);
       source = /** @type {ol.source.ImageWMS} */
           (firstParentTreeLayer.getSource());
@@ -575,7 +611,7 @@ gmf.LayertreeController.prototype.toggleActive = function(treeCtrl) {
  * @export
  */
 gmf.LayertreeController.prototype.getNodeState = function(treeCtrl) {
-  var style;
+  var style, layersNames;
   var layer = treeCtrl.layer;
   var node = /** @type {GmfThemesNode} */ (treeCtrl.node);
   var type = this.getNodeType_(node);
@@ -584,28 +620,42 @@ gmf.LayertreeController.prototype.getNodeState = function(treeCtrl) {
   var firstParentTreeSource;
   var currentLayersNames = this.groupNodeStates_[
       goog.getUid(firstParentTreeLayer)];
+  var subNodes = [];
 
   switch (type) {
     case gmf.LayertreeController.TYPE_WMS:
     case gmf.LayertreeController.TYPE_WMTS:
     case gmf.LayertreeController.TYPE_EXTERNALWMS:
       if (firstParentTreeLayer instanceof ol.layer.Group) {
-        // If layer is not define (That occures the first time, because the
-        // layer is just in the first parent group) add it to current tree to
-        // save time next.
-        if (!goog.isDefAndNotNull(layer)) {
-          this.addLayerToLeaf_(treeCtrl);
-          layer = treeCtrl.layer;
-        }
-        // Get style of this node depending if the relative layer is visible.
-        style = goog.isDefAndNotNull(layer) && layer.getVisible() ?
-            'on' : 'off';
+        if (this.getNodeType_(firstParentTree.node) === gmf.LayertreeController.TYPE_MIXEDGROUP) {
+          //case not-mixed group in a mixed group. Changing firstParentTree ref
+          //to the first not-mixed tree
+          var firstNonMixed = this.retrieveFirstNonMixedTree_(treeCtrl) || treeCtrl;
+          this.getFlatNodes_(firstNonMixed.node, subNodes);
+          firstParentTreeLayer = firstParentTreeLayer.getLayers().getArray().filter(function(l) {
+            return l.get('layerName') === firstNonMixed.node.name;
+          })[0];
+          layersNames = firstParentTreeLayer.getSource().getParams()['LAYERS'].split(',');
+          style = layersNames.indexOf(node.name) < 0 ||
+              !firstParentTreeLayer.getVisible() ? 'off' : 'on';
+        } else {
+          // If layer is not define (That occures the first time, because the
+          // layer is just in the first parent group) add it to current tree to
+          // save time next.
+          if (!goog.isDefAndNotNull(layer)) {
+            this.addLayerToLeaf_(treeCtrl);
+            layer = treeCtrl.layer;
+          }
+          // Get style of this node depending if the relative layer is visible.
+          style = goog.isDefAndNotNull(layer) && layer.getVisible() ?
+              'on' : 'off';
 
+        }
       } else {
         // If layer of the group is a wms in a not mixed group:
         firstParentTreeSource = /** @type {ol.source.ImageWMS} */
             (firstParentTreeLayer.getSource());
-        var layersNames =
+        layersNames =
             firstParentTreeSource.getParams()['LAYERS'].split(',');
         // Get style for this layer depending if the layer is on the map or not
         // and if the layer is visible;
