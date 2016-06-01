@@ -36,14 +36,13 @@
         ng-click="mainCtrl.toggleLeftNavVisibility()">
         <span class="gmf-icon gmf-icon-layers"></span>
       </button>
-      <div class="search">
-        <gmf-search gmf-search-map="mainCtrl.map"
-          gmf-search-datasources="mainCtrl.searchDatasources"
-          gmf-search-clearbutton="true"
-          gmf-search-coordinatesprojections="mainCtrl.searchCoordinatesProjections"
-          gmf-search-listeners="::mainCtrl.searchListeners">
-        </gmf-search>
-      </div>
+      <gmf-search gmf-search-map="mainCtrl.map"
+        class="search"
+        gmf-search-datasources="mainCtrl.searchDatasources"
+        gmf-search-clearbutton="true"
+        gmf-search-coordinatesprojections="mainCtrl.searchCoordinatesProjections"
+        gmf-search-listeners="::mainCtrl.searchListeners">
+      </gmf-search>
       <button class="nav-trigger nav-right-trigger"
         ng-click="mainCtrl.toggleRightNavVisibility()">
         <i class="fa fa-wrench"></i>
@@ -76,12 +75,13 @@
           </gmf-layertree>
         </ul>
       </div>
-      <div id="background" class="slide" data-header-title="{{'Background' | translate}}">
-        <gmf-mobile-backgroundlayerselector
-          gmf-mobile-backgroundlayerselector-map="::mainCtrl.map"
-          gmf-mobile-backgroundlayerselector-select="mainCtrl.hideNav()">
-        </gmf-mobile-backgroundlayerselector>
-      </div>
+      <gmf-backgroundlayerselector
+        id="background"
+        class="slide"
+        data-header-title="{{'Background' | translate}}"
+        gmf-backgroundlayerselector-map="::mainCtrl.map"
+        gmf-backgroundlayerselector-select="mainCtrl.hideNav()">
+      </gmf-backgroundlayerselector>
       <gmf-themeselector
         id="themes"
         class="slide"
@@ -128,20 +128,31 @@
     <script src="../../../../lib/watchwatchers.js"></script>
     <script>
       (function() {
-         var module = angular.module('app');
-         module.constant('defaultLang', 'en');
-         module.constant('langUrls', {
-           'en': '../../build/gmf-en.json',
-           'fr': '../../build/gmf-fr.json',
-           'de': '../../build/gmf-de.json'
-         });
-         module.constant('authenticationBaseUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi');
-         module.constant('fulltextsearchUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/fulltextsearch?limit=20');
-         module.constant('gmfWmsUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/mapserv_proxy');
-         module.constant('gmfTreeUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/themes?version=2&background=background');
-         module.constant('gmfSearchGroups', []);
-         // Requires that the gmfSearchGroups is specified
-         module.constant('gmfSearchActions', []);
+        var urlElements = window.location.pathname.split('/');
+
+        var angularLocaleScriptUrlElements = urlElements.slice(0, urlElements.length - 3);
+        angularLocaleScriptUrlElements.push('build', 'angular-locale_{{locale}}.js');
+
+        var gmfModule = angular.module('gmf');
+        gmfModule.constant('angularLocaleScript', angularLocaleScriptUrlElements.join('/'));
+
+        var langUrls = {};
+        ['en', 'fr', 'de'].forEach(function(lang) {
+            var langUrlElements = urlElements.slice(0, urlElements.length - 3);
+            langUrlElements.push('build', 'gmf-' + lang + '.json')
+            langUrls[lang] = langUrlElements.join('/')
+        });
+
+        var module = angular.module('app');
+        module.constant('defaultLang', 'en');
+        module.constant('langUrls', langUrls);
+        module.constant('authenticationBaseUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi');
+        module.constant('fulltextsearchUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/fulltextsearch?limit=20');
+        module.constant('gmfWmsUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/mapserv_proxy');
+        module.constant('gmfTreeUrl', 'https://geomapfish-demo.camptocamp.net/2.1/wsgi/themes?version=2&background=background');
+        module.constant('gmfSearchGroups', []);
+        // Requires that the gmfSearchGroups is specified
+        module.constant('gmfSearchActions', []);
        })();
     </script>
   </body>
