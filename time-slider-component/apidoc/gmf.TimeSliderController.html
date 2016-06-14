@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: MobileMeasurePointController <small>controller:GmfMobileMeasurePointController</small></title>
+    <title>JSDoc: Class: TimeSliderController <small>controller:gmfTimeSliderController</small></title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: MobileMeasurePointController <small>controller:GmfMobileMeasurePointController</small></h1>
+    <h1 class="page-title">Class: TimeSliderController <small>controller:gmfTimeSliderController</small></h1>
 
     
 
@@ -28,8 +28,8 @@
 
 <header>
     
-        <h2 id="MobileMeasurePointController">
-            <span class="ancestors">gmf.</span>MobileMeasurePointController
+        <h2 id="TimeSliderController">
+            <span class="ancestors">gmf.</span>TimeSliderController
         </h2>
         
     
@@ -42,11 +42,15 @@
 
     
 
-    <h4 class="name" id="MobileMeasurePointController"><span class="type-signature"></span>new MobileMeasurePointController<span class="signature">(gettextCatalog, $scope, gmfAltitude, ngeoDebounce, ngeoDecorateInteraction)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TimeSliderController"><span class="type-signature"></span>new TimeSliderController<span class="signature">($scope)</span><span class="type-signature"></span></h4>
 
     
 
 
+
+<div class="description">
+    <p>TimeSliderController - directive controller</p>
+</div>
 
 
 
@@ -81,24 +85,6 @@
 
         <tr>
             
-                <td class="name"><code>gettextCatalog</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Gettext catalog.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>$scope</code></td>
             
 
@@ -111,61 +97,6 @@
             
 
             <td class="description last"><p>Angular scope.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>gmfAltitude</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>gmf altitude service.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ngeoDebounce</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>ngeo Debounce service.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ngeoDecorateInteraction</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Decorate
-    interaction service.</p></td>
         </tr>
 
     
@@ -209,8 +140,8 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L80">line 80</a>
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js">contribs/gmf/src/directives/timeslider.js</a>,
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js#L128">line 128</a>
     </li></ul></dd>
     
 
@@ -254,80 +185,14 @@
 
         
             
-<h4 class="name" id="active"><span class="type-signature"></span>active<span class="type-signature"> :<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></h4>
+<h4 class="name" id="dates"><span class="type-signature"></span>dates<span class="type-signature"> :<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></h4>
 
 
 
 
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-    
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L111">line 111</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="decimals"><span class="type-signature"></span>decimals<span class="type-signature"> :<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span></h4>
-
-
-
+<div class="description">
+    <p>Model for the ui-slider directive</p>
+</div>
 
 
 
@@ -335,10 +200,10 @@
     <ul>
         <li>
             
+<span class="param-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>
+|
+
 <span class="param-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>
-|
-
-<span class="param-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined">undefined</a></span>
 
 
         </li>
@@ -378,8 +243,8 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L124">line 124</a>
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js">contribs/gmf/src/directives/timeslider.js</a>,
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js#L172">line 172</a>
     </li></ul></dd>
     
 
@@ -397,22 +262,16 @@
 
         
             
-<h4 class="name" id="drawInteraction"><span class="type-signature"></span>drawInteraction<span class="type-signature"> :<a href="ngeo.interaction.MobileDraw.html">ngeo.interaction.MobileDraw</a></span></h4>
+<h4 class="name" id="sliderOptions"><span class="type-signature"></span>sliderOptions<span class="type-signature"></span></h4>
 
 
 
 
+<div class="description">
+    <p>Options for the ui-slider directive</p>
+</div>
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="ngeo.interaction.MobileDraw.html">ngeo.interaction.MobileDraw</a></span>
-
-
-        </li>
-    </ul>
 
 
 
@@ -448,8 +307,8 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L172">line 172</a>
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js">contribs/gmf/src/directives/timeslider.js</a>,
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js#L160">line 160</a>
     </li></ul></dd>
     
 
@@ -467,10 +326,14 @@
 
         
             
-<h4 class="name" id="map"><span class="type-signature"></span>map<span class="type-signature"> :<a href="http://openlayers.org/en/master/apidoc/ol.Map.html">ol.Map</a></span></h4>
+<h4 class="name" id="time"><span class="type-signature"></span>time<span class="type-signature"> :<a href="gmfx.html#TimeProperty">gmfx.TimeProperty</a></span></h4>
 
 
 
+
+<div class="description">
+    <p>A time object for directive initialization</p>
+</div>
 
 
 
@@ -478,7 +341,7 @@
     <ul>
         <li>
             
-<span class="param-type"><a href="http://openlayers.org/en/master/apidoc/ol.Map.html">ol.Map</a></span>
+<span class="param-type"><a href="gmfx.html#TimeProperty">gmfx.TimeProperty</a></span>
 
 
         </li>
@@ -518,154 +381,8 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L105">line 105</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="measure"><span class="type-signature"></span>measure<span class="type-signature"> :<a href="ngeo.interaction.MeasurePointMobile.html">ngeo.interaction.MeasurePointMobile</a></span></h4>
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="ngeo.interaction.MeasurePointMobile.html">ngeo.interaction.MeasurePointMobile</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-    
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L159">line 159</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="sketchStyle"><span class="type-signature"></span>sketchStyle<span class="type-signature"> :<a href="http://openlayers.org/en/master/apidoc/ol.style.Style.html">ol.style.Style</a>|<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>.&lt;<a href="http://openlayers.org/en/master/apidoc/ol.style.Style.html">ol.style.Style</a>>|<a href="http://openlayers.org/en/master/apidoc/ol.style.html#.StyleFunction">ol.style.StyleFunction</a></span></h4>
-
-
-
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="http://openlayers.org/en/master/apidoc/ol.style.Style.html">ol.style.Style</a></span>
-|
-
-<span class="param-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>.&lt;<a href="http://openlayers.org/en/master/apidoc/ol.style.Style.html">ol.style.Style</a>></span>
-|
-
-<span class="param-type"><a href="http://openlayers.org/en/master/apidoc/ol.style.html#.StyleFunction">ol.style.StyleFunction</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-    
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L130">line 130</a>
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js">contribs/gmf/src/directives/timeslider.js</a>,
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js#L142">line 142</a>
     </li></ul></dd>
     
 
@@ -692,14 +409,14 @@
 
     
 
-    <h4 class="name" id="deactivate"><span class="type-signature"></span>deactivate<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="onDateSelected"><span class="type-signature"></span>onDateSelected<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    <p>Deactivate the directive.</p>
+    <p>Function called after date(s) changed/selected</p>
 </div>
 
 
@@ -746,134 +463,8 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
     
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L191">line 191</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="translate"><span class="type-signature"></span>translate<span class="signature">(str)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>str</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>String to translate.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-    
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js">contribs/gmf/src/directives/mobilemeasurepoint.js</a>,
-        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/mobilemeasurepoint.js#L201">line 201</a>
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js">contribs/gmf/src/directives/timeslider.js</a>,
+        <a href="https://github.com/camptocamp/ngeo/blob/master/contribs/gmf/src/directives/timeslider.js#L135">line 135</a>
     </li></ul></dd>
     
 

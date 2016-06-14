@@ -12,7 +12,6 @@
       ul {
         width: 50%;
       }
-
       li {
         list-style: none;
       }
@@ -25,10 +24,10 @@
     <p id="desc">This example shows how to use the <code>gmf-time-slider</code> directive.</p>
     <ul>
       <li>
-        Select a periode with a timeslider
+        Select a period with a timeslider
       </li>
       <li>
-          <gmf-time-slider time="ctrl.sliderRange" on-date-selected="ctrl.onDateRangeSelected(time)"></gmf-time-slider>
+        <gmf-time-slider gmf-time-slider-time="ctrl.sliderRange" gmf-time-slider-on-date-selected="ctrl.onDateRangeSelected(time)"></gmf-time-slider>
       </li>
       <li style="margin-top: 50px">
         Date selected:
@@ -40,7 +39,7 @@
         Select a single date with a timeslider
       </li>
       <li>
-          <gmf-time-slider time="ctrl.slider" on-date-selected="ctrl.onDateSelected(time)"></gmf-time-slider>
+        <gmf-time-slider gmf-time-slider-time="ctrl.slider" gmf-time-slider-on-date-selected="ctrl.onDateSelected(time)"></gmf-time-slider>
       </li>
       <li style="margin-top: 50px">
         Date selected:

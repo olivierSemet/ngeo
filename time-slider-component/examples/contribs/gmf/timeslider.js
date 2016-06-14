@@ -16,7 +16,7 @@ app.module = angular.module('app', ['gmf']);
 app.MainController = function($scope) {
 
   /**
-   * @type {Object}
+   * @type {gmfx.TimeProperty}
    * @export
    */
   this.sliderRange = {
@@ -30,7 +30,7 @@ app.MainController = function($scope) {
   };
 
   /**
-   * @type {Object}
+   * @type {gmfx.TimeProperty}
    * @export
    */
   this.slider = {
