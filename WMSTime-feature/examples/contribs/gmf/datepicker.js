@@ -26,7 +26,7 @@ app.MainController = function($scope, gmfWMSTime) {
    * @type {gmfx.TimeProperty}
    * @export
    */
-  this.wmsTimeRange = {
+  this.wmsTimeRangeMode = {
     widget: /** @type {gmfx.TimePropertyWidgetEnum} */ ('datepicker'),
     maxValue: '2013-12-31T00:00:00Z',
     minValue: '2006-01-01T00:00:00Z',
@@ -41,14 +41,14 @@ app.MainController = function($scope, gmfWMSTime) {
    * @type {gmfx.TimeProperty}
    * @export
    */
-  this.wmsTimeSingle = {
+  this.wmsTimeValueMode = {
     widget: /** @type {gmfx.TimePropertyWidgetEnum} */ ('datepicker'),
     maxValue: '2015-12-31T00:00:00Z',
     minValue: '2014-01-01T00:00:00Z',
     maxDefValue: null,
     minDefValue: null,
     resolution: /** @type {gmfx.TimePropertyResolutionEnum}*/ ('month'),
-    mode: /** @type {gmfx.TimePropertyModeEnum} */ ('single'),
+    mode: /** @type {gmfx.TimePropertyModeEnum} */ ('value'),
     interval : [0,1,0,0]
   };
 
@@ -65,11 +65,11 @@ app.MainController = function($scope, gmfWMSTime) {
   this.rangeValue;
 
   this.onDateSelected = function(date) {
-    this.value = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeSingle, date);
+    this.value = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeValueMode, date);
   };
 
   this.onDateRangeSelected = function(date) {
-    this.rangeValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeRange, date);
+    this.rangeValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeRangeMode, date);
   };
 
 };

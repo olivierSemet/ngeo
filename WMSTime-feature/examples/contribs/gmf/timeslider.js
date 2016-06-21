@@ -26,7 +26,7 @@ app.MainController = function($scope, gmfWMSTime) {
    * @type {gmfx.TimeProperty}
    * @export
    */
-  this.wmsTimeRange = {
+  this.wmsTimeRangeMode = {
     widget: /** @type {gmfx.TimePropertyWidgetEnum} */ ('slider'),
     maxValue: '2013-12-31T00:00:00Z',
     minValue: '2006-01-01T00:00:00Z',
@@ -41,14 +41,14 @@ app.MainController = function($scope, gmfWMSTime) {
    * @type {gmfx.TimeProperty}
    * @export
    */
-  this.wmsTimeSingle = {
+  this.wmsTimeValueMode = {
     widget: /** @type {gmfx.TimePropertyWidgetEnum} */ ('slider'),
     maxValue: '2015-12-31T00:00:00Z',
     minValue: '2014-01-01T00:00:00Z',
     maxDefValue: null,
     minDefValue: null,
     resolution: /** @type {gmfx.TimePropertyResolutionEnum}*/ ('year'),
-    mode: /** @type {gmfx.TimePropertyModeEnum} */ ('single'),
+    mode: /** @type {gmfx.TimePropertyModeEnum} */ ('value'),
     interval : [0,0,1,0]
   };
 
@@ -65,12 +65,12 @@ app.MainController = function($scope, gmfWMSTime) {
   this.sliderRangeValue;
 
   this.onDateSelected = function(date) {
-    this.sliderValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeSingle, date);
+    this.sliderValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeValueMode, date);
     $scope.$digest();
   };
 
   this.onDateRangeSelected = function(date) {
-    this.sliderRangeValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeRange, date);
+    this.sliderRangeValue = this.gmfWMSTime_.formatWMSTimeParam(this.wmsTimeRangeMode, date);
     $scope.$digest();
   };
 
