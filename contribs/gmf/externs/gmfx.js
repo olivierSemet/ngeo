@@ -473,6 +473,7 @@ gmfx.TimePropertyWidgetEnum = {
   DATEPICKER : 'datepicker'
 };
 
+
 /**
  * Enum for the time property of a GmfThemesNode
  * Mode of the widget
@@ -483,6 +484,7 @@ gmfx.TimePropertyModeEnum = {
   VALUE : 'value',
   DISABLED : 'disabled'
 };
+
 
 /**
  * Enum for the time property of a GmfThemesNode
@@ -495,6 +497,7 @@ gmfx.TimePropertyResolutionEnum = {
   YEAR : 'year',
   SECOND : 'second'
 };
+
 
 /**
  * Time object for WMS layer
@@ -511,3 +514,36 @@ gmfx.TimePropertyResolutionEnum = {
  * }}
  */
 gmfx.TimeProperty;
+
+
+/**
+ * @typedef {{
+ *  data: Object.<string>,
+ *  status: number
+ * }}
+ */
+gmfx.ShortenerAPIResponse;
+
+
+/**
+ * Response payload to the shortener API
+ * @type {{ short_url : string }}
+ */
+gmfx.ShortenerAPIResponse.data;
+
+
+/**
+ * HTTP status
+ * @type {number|undefined}
+ */
+gmfx.ShortenerAPIResponse.status;
+
+
+/**
+ * @typedef {{
+ *  url: string,
+ *  email: (string|undefined),
+ *  message : (string|undefined)
+ * }}
+ */
+gmfx.ShortenerAPIRequestParams;
