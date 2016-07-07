@@ -56,12 +56,12 @@
             <span class="fa fa-pencil"></span>
           </button>
           <br/>
-          <button class="btn btn-default" ng-click="mainCtrl.openModaleShare()"
+          <button ngeo-btn class="btn btn-default" ng-model="mainCtrl.modalShareShown"
             data-toggle="tooltip" data-placement="left" data-original-title="{{'Share this map'|translate}}">
             <span class="fa fa-share-alt"></span>
           </button>
         </div>
-        <div class="tools-content container-fluid" ng-class="{active: mainCtrl.toolsActive}">
+        <div class="tools-content container-fluid" ng-class="{active: !mainCtrl.modalShareShown && mainCtrl.toolsActive}">
           <div ng-show="mainCtrl.loginActive" class="row">
             <div class="col-sm-12">
               <div class="tools-content-heading">
@@ -166,7 +166,7 @@
     <script src="../../../../lib/watchwatchers.js"></script>
     <script>
       (function() {
-        var cacheVersion = 'c6ee2a06dbfb2c96299de14981c287c89adc89f5';
+        var cacheVersion = '98ce4a7f0ccf1e9387e5c8194064bbd245e30d96';
         var urlElements = window.location.pathname.split('/');
 
         var angularLocaleScriptUrlElements = urlElements.slice(0, urlElements.length - 3);
