@@ -518,7 +518,7 @@ gmfx.TimeProperty;
 
 /**
  * @typedef {{
- *  data: Object.<string>,
+ *  data: gmfx.ShortenerAPIResponseData,
  *  status: number
  * }}
  */
@@ -527,7 +527,7 @@ gmfx.ShortenerAPIResponse;
 
 /**
  * Response payload to the shortener API
- * @type {{ short_url : string }}
+ * @type {gmfx.ShortenerAPIResponseData}
  */
 gmfx.ShortenerAPIResponse.data;
 
@@ -537,6 +537,14 @@ gmfx.ShortenerAPIResponse.data;
  * @type {number|undefined}
  */
 gmfx.ShortenerAPIResponse.status;
+
+
+/**
+ * @typedef {{
+ *  short_url: string
+ * }}
+ */
+gmfx.ShortenerAPIResponseData;
 
 
 /**
