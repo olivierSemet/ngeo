@@ -94025,6 +94025,21 @@ ngeo.profile = function(options) {
       options.poiLabelAngle : -60;
 
   /**
+   * @type {Object.<string, string>}
+   */
+  var i18n = options.i18n || {};
+
+  /**
+   * @type {string}
+   */
+  var xAxisLabel = (i18n.xAxis || 'Distance');
+
+  /**
+   * @type {string}
+   */
+  var yAxisLabel = (i18n.yAxis || 'Elevation');
+
+  /**
    * @type {ngeox.profile.ProfileFormatter}
    */
   var formatter = {
@@ -94122,8 +94137,8 @@ ngeo.profile = function(options) {
 
   var profile = function(selection) {
     selection.each(function(data) {
+      d3.select(this).selectAll('svg').remove();
       if (data === undefined) {
-        d3.select(this).selectAll('svg').remove();
         return;
       }
 
@@ -94195,7 +94210,7 @@ ngeo.profile = function(options) {
           .attr('dy', '.75em')
           .attr('transform', 'rotate(-90)')
           .style('fill', 'grey')
-          .text('elevation (m)');
+          .text(yAxisLabel + ' [m]');
 
         gEnter.append('g')
           .attr('class', 'metas')
@@ -94318,7 +94333,7 @@ ngeo.profile = function(options) {
           .call(xAxis);
 
         g.select('.x.label')
-          .text('distance (' + xUnits + ')')
+          .text(xAxisLabel + ' [' + xUnits + ']')
           .style('fill', 'grey')
           .style('shape-rendering', 'crispEdges');
 
@@ -96356,8 +96371,6 @@ ngeo.module.filter('ngeoScalify', ngeo.Scalify);
  */
 ngeo.Number = function($locale) {
   var formats = $locale.NUMBER_FORMATS;
-  var groupSep = formats.GROUP_SEP;
-  var decimalSep = formats.DECIMAL_SEP;
 
   /**
    * @param {number} number The number to format.
@@ -96365,6 +96378,8 @@ ngeo.Number = function($locale) {
    * @return {string} The formatted string.
    */
   var result = function(number, opt_precision) {
+    var groupSep = formats.GROUP_SEP;
+    var decimalSep = formats.DECIMAL_SEP;
     if (opt_precision === undefined) {
       opt_precision = 3;
     }
@@ -96494,15 +96509,15 @@ ngeo.module.filter('ngeoUnitPrefix', ngeo.UnitPrefix);
  * Example without fractionDigits but with defined template and localize:
  *
  *      <!-- With en-US localization (opt_localize can be true or undefined) -->
- *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}:true}}</p>
+ *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}}}</p>
  *      <!-- will Become 2,600,000, 1,600,000 -->
  *      <br/>
  *      <!-- With fr-CH localization (opt_localize can be true or undefined) -->
- *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}:true}}</p>
+ *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}}}</p>
  *      <!-- will Become 2'600'000, 1'600'000 -->
  *      <br/>
  *      <!-- With en-US localization but with localization to false -->
- *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}:false}}</p>
+ *      <p>{{[2600000, 1600000] | ngeoNumberCoordinates::{x}, {y}}}</p>
  *      <!-- will Become 2'600'000, 1'600'000 -->
  *
  * @param {angular.$filter} $filter Angular filter
@@ -96522,27 +96537,15 @@ ngeo.NumberCoordinates = function($filter) {
    *     Where "{x}" will be replaced by the first coordinate and "{y}" by the
    *     second one. Note: Use a html entity to use the semicolon symbole
    *     into a template.
-   * @param {(boolean|string)=} opt_localize Optional. If true or not defined,
-   *     format number as the current local system (see Angular number filter).
-   *     Set it explicitely to false to use always "." as the decimal separator
-   *     and include "'" group separators after each third digit.
    * @return {string} Number formated coordinates.
    */
-  var filterFn = function(coordinates, opt_fractionDigits, opt_template,
-      opt_localize) {
+  var filterFn = function(coordinates, opt_fractionDigits, opt_template) {
     var template = opt_template ? opt_template : '{x} {y}';
     var x = coordinates[0];
     var y = coordinates[1];
     var fractionDigits = parseInt(opt_fractionDigits, 10) | 0;
-    if (opt_localize === 'false' || opt_localize === false) {
-      x = x.toFixed(fractionDigits);
-      y = y.toFixed(fractionDigits);
-      x = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\'');
-      y = y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\'');
-    } else {
-      x = $filter('number')(x, fractionDigits);
-      y = $filter('number')(y, fractionDigits);
-    }
+    x = $filter('number')(x, fractionDigits);
+    y = $filter('number')(y, fractionDigits);
     return template.replace('{x}', x).replace('{y}', y);
   };
   return filterFn;
@@ -109874,6 +109877,8 @@ goog.require('ngeo');
  *
  * @param {angular.$parse} $parse Angular parse service.
  * @return {angular.Directive} The directive specs.
+ * @htmlAttribute {boolean} ngeo-modal-destroy-content-on-hide Destroy the content
+ * when the modal is hidden
  * @ngInject
  * @ngdoc directive
  * @ngname ngeoModal
@@ -109883,7 +109888,6 @@ ngeo.modalDirective = function($parse) {
     template: '<div class="modal fade" tabindex="-1" role="dialog">' +
         '<div class="modal-dialog">' +
         '<div class="modal-content">' +
-        '<ng-transclude></ng-transclude>' +
         '</div>' +
         '</div>' +
         '</div>',
@@ -109898,8 +109902,11 @@ ngeo.modalDirective = function($parse) {
          * @param {angular.NgModelController} ngModelController The ngModel
          * controller.
          */
-        function(scope, element, attrs, ngModelController) {
+        function(scope, element, attrs, ngModelController, transcludeFn) {
           var modal = element.children();
+          var destroyContent = attrs['ngeoModalDestroyContentOnHide'] === 'true';
+          var childScope = scope.$new();
+
           // move the modal to document body to ensure that it is on top of
           // other elements even if in a positioned element initially.
           angular.element(document.body).append(modal);
@@ -109915,6 +109922,25 @@ ngeo.modalDirective = function($parse) {
               ngModelController.$setViewValue(type == 'shown');
             });
           });
+
+          if (destroyContent) {
+            modal.on('hide.bs.modal', onHide);
+            modal.on('show.bs.modal', onShow);
+          } else {
+            modal.find('.modal-content').append(transcludeFn());
+          }
+
+          function onShow(e) {
+            childScope = scope.$new();
+            transcludeFn(childScope, function(clone) {
+              modal.find('.modal-content').append(clone);
+            });
+          }
+
+          function onHide(e) {
+            childScope.$destroy();
+            modal.find('.modal-content').empty();
+          }
         }
   };
 };
@@ -110332,8 +110358,8 @@ ngeo.recenterDirective = function() {
       }
 
       // if the children is a link or button
-      $element.on('click', function(event) {
-        recenter(angular.element(event.target));
+      $element.on('click', '*', function(event) {
+        recenter(angular.element($(this)));
       });
 
       // if the children is an option inside a select
@@ -127367,11 +127393,13 @@ goog.color.alpha.hsvaArrayToHex = function(hsva) {
 goog.provide('ngeo.CreatePrint');
 goog.provide('ngeo.Print');
 
+
 goog.require('goog.color');
 goog.require('goog.color.alpha');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ngeo');
+goog.require('ngeo.LayerHelper');
 goog.require('ol.color');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.GeometryType');
